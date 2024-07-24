@@ -1,6 +1,6 @@
 // Google Sheets API settings
-const spreadsheetId = 'your_spreadsheet_id';
-const apiKey = 'your_api_key';
+const spreadsheetId = '1fAPCoNpNh3SVwwItXrQQ-KZJunEjxVrwLFvqo4M_KvY';
+const apiKey = 'AIzaSyCTLv7w6jZyjA9W6U4zhi16i7UB2rDyksU';
 
 // Form elements
 const loginForm = document.getElementById('login-form');
