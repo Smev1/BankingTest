@@ -1,45 +1,45 @@
+// Google Sheets API settings
+const spreadsheetId = 'your_spreadsheet_id';
+const apiKey = 'your_api_key';
+
+// Form elements
 const loginForm = document.getElementById('login-form');
-const dashboardContainer = document.getElementById('dashboard-container');
-const transferButton = document.getElementById('transfer-button');
-const transactionsButton = document.getElementById('transactions-button');
-const transferForm = document.getElementById('transfer-form');
-const transactionsList = document.getElementById('transactions-list');
+const loginUsernameInput = document.getElementById('login-username');
+const loginPasswordInput = document.getElementById('login-password');
+const mainContainer = document.getElementById('main-container');
+const myForm = document.getElementById('myForm');
+const usernameInput = document.getElementById('username');
+const balanceInput = document.getElementById('balance');
+const adminForm = document.getElementById('admin-form');
+const adminUsernameInput = document.getElementById('admin-username');
+const adminAmountInput = document.getElementById('admin-amount');
+const transferFromInput = document.getElementById('transfer-from');
+const transferToInput = document.getElementById('transfer-to');
 
-const SPREADSHEET_ID = '1fAPCoNpNh3SVwwItXrQQ-KZJunEjxVrwLFvqo4M_KvY';
-const API_KEY = 'AIzaSyCTLv7w6jZyjA9W6U4zhi16i7UB2rDyksU';
-
-let currentUser = null;
-
-// Authenticate with Google Sheets API
-async function authenticate() {
-  const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values:batchGet?ranges=Sheet1!A1:D100&key=${API_KEY}`);
-  const data = await response.json();
-  return data.valueRanges[0].values;
+// Function to check login credentials
+async function checkLogin(username, password) {
+  // TO DO: implement login credential check
+  // For now, just return true
+  return true;
 }
 
-// Login functionality
-loginForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
-  const data = await authenticate();
-  const user = data.find((row) => row[0] === username && row[1] === password);
-  if (user) {
-    currentUser = user;
-    dashboardContainer.style.display = 'block';
-    loginForm.style.display = 'none';
-    document.getElementById('balance').textContent = `Balance: ${user[2]}`;
+// Function to update user balance
+async function updateUserBalance(username, amount) {
+  const sheet = await getSheet(spreadsheetId, apiKey);
+  const userData = await getUserData(sheet, username);
+  if (userData) {
+    const newBalance = parseFloat(userData.balance) + parseFloat(amount);
+    await updateCellValue(sheet, username, 'Balance', newBalance);
   } else {
-    alert('Invalid username or password');
+    console.error(`User not found: ${username}`);
   }
-});
+}
 
-// Add event listeners for transfer and transactions buttons
-transferButton.addEventListener('click', () => {
-  transferForm.style.display = 'block';
-});
-
-transactionsButton.addEventListener('click', () => {
-  transactionsList.style.display = 'block';
-  // TO DO: Fetch transactions data from Google Sheets API
-});
+// Function to get user data from Google Sheets
+async function getUserData(sheet, username) {
+  const range = `A:B`;
+  const response = await sheet.spreadsheets.values.get({
+    spreadsheetId,
+    range,
+  });
+  const values = response.data.values
